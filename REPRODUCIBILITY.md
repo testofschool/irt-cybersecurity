@@ -57,7 +57,7 @@ See `outputs/results.json` for all statistical values from the manuscript run.
 
 A Zenodo deposit will be created upon public release:
 
-> **DOI:** *(pending — will be assigned upon arXiv submission)*
+> **DOI:** [10.5281/zenodo.20270362](https://doi.org/10.5281/zenodo.20270362)
 
 Until the DOI is assigned, this repository supports scripted reproduction from pinned public sources plus lightweight verification via `outputs/results.json`.
 The Zenodo deposit will contain the manuscript PDF, source code, figures, and `outputs/results.json`. The exact KEV and CWE snapshots are bundled in `data/snapshots/`. Other data files can be retrieved using the pinned URLs and SHA256 hashes in `data_manifest.json`.

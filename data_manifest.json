@@ -1,0 +1,84 @@
+{
+  "description": "Data snapshot metadata for exact reproducibility",
+  "snapshot_date": "2026-05-17",
+  "sources": {
+    "nvd_2023": {
+      "source": "github.com/fkie-cad/nvd-json-data-feeds",
+      "file": "CVE-2023.json.xz",
+      "note": "Latest release as of 2026-05-17; NVD syncs bi-hourly"
+    },
+    "nvd_2024": {
+      "source": "github.com/fkie-cad/nvd-json-data-feeds",
+      "file": "CVE-2024.json.xz",
+      "note": "Latest release as of 2026-05-17"
+    },
+    "cisa_kev": {
+      "source": "cisa.gov/kev",
+      "catalog_version": "2026.05.15",
+      "count": 1592
+    },
+    "epss": {
+      "source": "epss.empiricalsecurity.com",
+      "model_version": "v2025.03.14",
+      "score_date": "2026-05-17",
+      "count": 333778
+    },
+    "exploitdb": {
+      "source": "gitlab.com/exploit-database/exploitdb",
+      "file": "files_exploits.csv",
+      "snapshot_date": "2026-05-17"
+    },
+    "cwe": {
+      "source": "cwe.mitre.org/data/csv/1000.csv.zip",
+      "entries": 944
+    },
+    "attack": {
+      "version": "v19.0 (April 2026)",
+      "active_techniques": "222 techniques + 475 sub-techniques (697 total, Enterprise v19)",
+      "pinned_url": "https://raw.githubusercontent.com/mitre-attack/attack-stix-data/refs/tags/v19.0/enterprise-attack/enterprise-attack-19.0.json"
+    }
+  },
+  "expected_results": {
+    "matrix_dimensions": "333 vendors x 169 CWEs",
+    "combined_cves": 55020,
+    "cwe_temporal_stability_rho": 0.889,
+    "kev_exploitation_rho": -0.224,
+    "exploitdb_exploitation_rho": -0.362,
+    "ransomware_mann_whitney_p": "<1e-9"
+  },
+  "reproducibility_note": "For exact reproduction, download data sources as of snapshot_date and verify row counts match expected_results. Live sources may change.",
+  "file_checksums": {
+    "CVE-2023.json": {
+      "sha256": "5d3ca098c4409f266162abc704db8e7b944a94a9bf1ead7ada1dcd8d5e5eb3e1",
+      "size_bytes": 218387125
+    },
+    "CVE-2024.json": {
+      "sha256": "9d353b6037f6b2b38a1c7624d33b84fbe3556ed2b20e60297e97e41421caf0c9",
+      "size_bytes": 224265359
+    },
+    "kev.json": {
+      "sha256": "eee489c38ef15f84f1c7620aa6c671f8e4539053fee150f3cfab9931bdd92e2b",
+      "size_bytes": 1473939,
+      "note": "Live CISA feed; hash-enforced. For archival: use cisagov/kev-data GitHub mirror at catalogVersion 2026.05.15"
+    },
+    "epss_current.csv": {
+      "sha256": "04575fd5453ee31b1cf6d5479eee16fab319ed45332f06323ce4546192760b44",
+      "size_bytes": 10114510,
+      "note": "Snapshot 2026-05-17; use dated URL for exact match"
+    },
+    "exploitdb.csv": {
+      "sha256": "0384ee2f62f0e8e6a2f09427ee2cb7c23e9f25ff1d0cc7b736cd81fadaeb2a37",
+      "size_bytes": 10161682,
+      "pinned_commit": "11e5b5e5015c"
+    },
+    "attack-enterprise.json": {
+      "sha256": "bdf1ce86a4e604214c5076d37ae4dcb322678afc528df8492e6fdc1b554f5da3",
+      "size_bytes": 53277393,
+      "note": "Pinned to v19.0 release tag"
+    },
+    "cwe_data.zip": {
+      "sha256": "6a3d52a7d164d98eb24ca3228039dcd98461379d225dfd395474c0d007537791",
+      "note": "Hash-enforced. CWE List v4.16"
+    }
+  }
+}

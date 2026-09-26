@@ -13,17 +13,21 @@ A vendor × CWE application of psychometric methods (IRT, LLTM-inspired decompos
 1. **CWE difficulty is temporally stable** (ρ = 0.889, 95% CI [0.836, 0.927])
 2. **Common CWEs are more exploited** (b ↔ KEV: ρ = −0.224; b ↔ ExploitDB: ρ = −0.362)
 3. **Ransomware targets low-difficulty CWEs** (Mann-Whitney p < 10⁻⁹)
-4. **CVSS explains only 12–21% of CWE difficulty** — structural incompleteness identified
-5. **PCR achieves up to 2.3× lift** for mid-range vendors
+4. **CVSS-only features explain 12% of CWE difficulty variance (in-sample R²); CVSS + CWE hierarchy explain 21%** — structural incompleteness identified
+5. **PCR achieves up to 2.3× lift** among the top-5-θ vendors (below random, 0.78×, for the highest-θ vendor)
 
 ## Reproduction
 
 > **Note:** This repository does not bundle large NVD, EPSS, ExploitDB, or ATT&CK files.
 > Run `bash scripts/download_data.sh` before `python src/experiment.py`.
-> For exact offline reproduction, use the Zenodo snapshot once available.
 
-### Exact reproduction (Zenodo)
-Use the Zenodo archive (DOI pending). Includes all large data snapshots.
+> **Known issue — NVD inputs not downloadable:** the pinned NVD release assets
+> (`fkie-cad/nvd-json-data-feeds`, tag `v2026.05.17-000006`) return HTTP 404 (checked 2026-09-26),
+> so `scripts/download_data.sh` stops at step 1 with an error. The NVD files are not in the
+> Zenodo archive either. See [REPRODUCIBILITY.md](REPRODUCIBILITY.md#pinned-nvd-release-no-longer-downloadable).
+
+### Archived snapshot (Zenodo)
+DOI: [10.5281/zenodo.20270362](https://doi.org/10.5281/zenodo.20270362). The deposit contains the manuscript PDF, source code, figures, and `outputs/results.json` (plus the KEV and CWE snapshots bundled in `data/snapshots/`). It does **not** include the large NVD, EPSS, ExploitDB, or ATT&CK data files; retrieve those via the pinned URLs and SHA256 hashes in `data_manifest.json`.
 
 ### Scripted reproduction
 ```bash
@@ -42,6 +46,7 @@ pdflatex main.tex && pdflatex main.tex
 
 ### Lightweight verification
 Use `outputs/results.json` to verify manuscript statistics without rerunning the full pipeline.
+Note: the committed `outputs/results.json` does not use the exact schema that `src/experiment.py` writes (e.g. `snapshot_date` vs. `run_date`/`data_snapshot_date`, `pcr.note`, and the `ransomware.mann_whitney_p` format), and some manuscript statistics are not included in it (e.g. the vendor-level θ ↔ KEV p-value and the KEV/EPSS/ExploitDB inter-correlations).
 
 ## Requirements
 

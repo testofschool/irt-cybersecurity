@@ -18,6 +18,28 @@ DATA_DIR = str(ROOT / "data")
 FIG_DIR = str(ROOT / "figures")
 os.makedirs(FIG_DIR, exist_ok=True)
 np.random.seed(42)
+
+# Figure titles quote the manuscript-run statistics recorded in outputs/results.json
+# (read at run time instead of hard-coding them here).
+with open(ROOT / "outputs" / "results.json") as f:
+    RESULTS = json.load(f)
+try:
+    RHO_THETA_TEMPORAL = float(RESULTS["temporal"]["rho_theta"])
+    RHO_B_TEMPORAL = float(RESULTS["temporal"]["rho_b"])
+    RANSOMWARE_MW_P = RESULTS["ransomware"]["mann_whitney_p"]
+except KeyError as e:
+    sys.exit(f"outputs/results.json is missing key {e}; needed for figure titles.")
+
+def fmt_p(p):
+    """Format a results.json p-value (float, '3.2e-10' or '<1e-9') as mathtext."""
+    s = str(p).strip()
+    bound = s.startswith("<")
+    x = float(s.lstrip("<").strip())
+    mant, exp = f"{x:.1e}".split("e")
+    exp = int(exp)
+    body = rf"10^{{{exp}}}" if mant == "1.0" else rf"{mant}\times 10^{{{exp}}}"
+    return rf"$p {'<' if bound else '='} {body}$"
+
 plt.rcParams.update({'font.size': 9, 'figure.dpi': 300, 'savefig.bbox': 'tight', 'font.family': 'serif'})
 
 def load_nvd(year):
@@ -180,8 +202,8 @@ ax1.scatter(irt23.theta,irt24.theta,s=10,alpha=0.4,c='#2563eb',edgecolors='none'
 lims=[min(irt23.theta.min(),irt24.theta.min())-0.3,max(irt23.theta.max(),irt24.theta.max())+0.3]
 ax1.plot(lims,lims,'k--',lw=0.8,alpha=0.4)
 ax1.set_xlabel(r'Vendor $\theta$ (2023)'); ax1.set_ylabel(r'Vendor $\theta$ (2024)')
-# Use authoritative rounding from results.json (0.7633 → 0.763)
-ax1.set_title(r'Vendor $\theta$ Stability ($\rho$ = 0.763)')
+# Title value from outputs/results.json (temporal.rho_theta)
+ax1.set_title(r'Vendor $\theta$ Stability ($\rho$ = ' + f'{RHO_THETA_TEMPORAL:.3f})')
 ax1.spines['top'].set_visible(False); ax1.spines['right'].set_visible(False)
 # Label movers with offset to avoid overlap
 delta=irt24.theta-irt23.theta; movers=np.argsort(-np.abs(delta))[:3]
@@ -195,7 +217,7 @@ ax2.scatter(irt23.b,irt24.b,s=10,alpha=0.4,c='#16a34a',edgecolors='none')
 lims2=[min(irt23.b.min(),irt24.b.min())-0.3,max(irt23.b.max(),irt24.b.max())+0.3]
 ax2.plot(lims2,lims2,'k--',lw=0.8,alpha=0.4)
 ax2.set_xlabel('CWE Difficulty $b$ (2023)'); ax2.set_ylabel('CWE Difficulty $b$ (2024)')
-ax2.set_title(r'CWE Difficulty Stability ($\rho$ = 0.889)')
+ax2.set_title(r'CWE Difficulty Stability ($\rho$ = ' + f'{RHO_B_TEMPORAL:.3f})')  # temporal.rho_b
 ax2.spines['top'].set_visible(False); ax2.spines['right'].set_visible(False)
 fig.tight_layout(pad=1.5); fig.savefig(f'{FIG_DIR}/fig3_temporal_stability.pdf'); plt.close()
 
@@ -260,7 +282,7 @@ bp['boxes'][0].set_facecolor('#fee2e2'); bp['boxes'][0].set_edgecolor('#dc2626')
 bp['boxes'][1].set_facecolor('#dbeafe'); bp['boxes'][1].set_edgecolor('#2563eb')
 bp['medians'][0].set_color('#dc2626'); bp['medians'][1].set_color('#2563eb')
 ax.set_ylabel('IRT Difficulty ($b$)')
-ax.set_title(r'Ransomware Targets Low-Difficulty CWEs'+'\n'+r'(Mann-Whitney $p < 10^{-9}$)')
+ax.set_title(r'Ransomware Targets Low-Difficulty CWEs'+'\n'+'(Mann-Whitney '+fmt_p(RANSOMWARE_MW_P)+')')  # ransomware.mann_whitney_p
 ax.spines['top'].set_visible(False); ax.spines['right'].set_visible(False)
 fig.tight_layout(); fig.savefig(f'{FIG_DIR}/fig5_ransomware.pdf'); plt.close()
 

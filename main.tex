@@ -33,7 +33,7 @@ Current vulnerability management relies on static severity scores (CVSS) and mac
 To our knowledge, we present the first vendor$\times$CWE application of Item Response Theory (IRT), LLTM-inspired difficulty decomposition, and Psychometric Content Routing (PCR) to public NVD vulnerability corpora, linking fitted CWE difficulty to exploitation signals.
 Using 55,020 CVEs from the National Vulnerability Database (2023--2024), cross-validated against three independent exploitation-signal datasets (CISA KEV, FIRST EPSS, ExploitDB with 25,001 CVE-mapped entries), we model 333 software vendors as ``subjects'' and 169 CWE weakness types as ``items.''
 IRT decomposes the binary vendor$\times$CWE incidence profile into two interpretable latent traits: vendor attack surface breadth ($\theta$) and CWE incidence difficulty ($b$).
-Key findings: (1) CWE difficulty parameters are temporally stable across years ($\rho = 0.889$, 95\% CI $[0.836, 0.927]$); (2) common CWE types are disproportionately exploited ($b \leftrightarrow$ KEV rate: $\rho = -0.224$, $p = 0.003$; $b \leftrightarrow$ ExploitDB rate: $\rho = -0.362$, $p < 10^{-6}$), while CVSS features explain only 12--21\% of this difficulty structure; (3) ransomware-linked CWEs have significantly lower difficulty than non-ransomware CWEs (Mann-Whitney $p < 10^{-9}$); (4) PCR-based vendor-specific prioritization achieves up to 2.3$\times$ lift for mid-range vendors, while underperforming random for extreme-$\theta$ vendors.
+Key findings: (1) CWE difficulty parameters are temporally stable across years ($\rho = 0.889$, 95\% CI $[0.836, 0.927]$); (2) common CWE types are disproportionately exploited ($b \leftrightarrow$ KEV rate: $\rho = -0.224$, $p = 0.003$; $b \leftrightarrow$ ExploitDB rate: $\rho = -0.362$, $p = 1.3 \times 10^{-6}$), while CVSS features alone explain 12\% of this difficulty structure (in-sample $R^2$; 21\% with CWE hierarchy features added); (3) ransomware-linked CWEs have significantly lower difficulty than non-ransomware CWEs (Mann-Whitney $p < 10^{-9}$); (4) among the top-5-$\theta$ vendors, PCR-based vendor-specific prioritization achieves up to 2.3$\times$ lift, while underperforming random for the highest-$\theta$ vendor.
 Code and reproduction scripts are included in the accompanying repository.
 \end{abstract}
 
@@ -59,7 +59,7 @@ We extend IRT with Fischer's Linear Logistic Test Model (LLTM)~\citep{fischer197
 \item First application of IRT, LLTM-inspired decomposition, and PCR to a vendor $\times$ CWE vulnerability matrix constructed from public NVD corpora.
 \item Cross-validation against three independent exploitation-signal datasets (KEV, EPSS, ExploitDB) with bootstrap confidence intervals.
 \item Temporal stability analysis across NVD~2023 and 2024.
-\item Empirical demonstration that CVSS base metrics capture only 12--21\% of CWE difficulty variance.
+\item Empirical demonstration that CVSS base metrics alone capture 12\% of CWE difficulty variance (in-sample $R^2$; 21\% with CWE hierarchy features added).
 \item Discovery that ransomware targets low-difficulty (common) CWE types ($p < 10^{-9}$).
 \end{enumerate}
 
@@ -254,10 +254,10 @@ Negative correlations confirm that \textbf{common CWE types (lower $b$) are more
 Exploitation Signal & $\rho$ ($b \leftrightarrow$ rate) & $p$-value & 95\% CI \\
 \midrule
 CISA KEV rate & $-0.224$ & 0.003 & $[-0.383, -0.069]$ \\
-ExploitDB rate & $\mathbf{-0.362}$ & $< 10^{-6}$ & $[-0.506, -0.204]$ \\
+ExploitDB rate & $\mathbf{-0.362}$ & $1.3 \times 10^{-6}$ & $[-0.506, -0.204]$ \\
 EPSS mean & $-0.097$ & 0.211 & $[-0.252, +0.057]$ \\
 \midrule
-\multicolumn{4}{@{}l}{\textit{Vendor-level validation ($n = 110$ vendors with KEV entries):}} \\
+\multicolumn{4}{@{}l}{\textit{Vendor-level validation ($n = 110$ vendors with $\geq 1$ KEV or ExploitDB entry):}} \\
 $\theta \leftrightarrow$ KEV count & $+0.478$ & $< 10^{-6}$ & $[+0.310, +0.622]$ \\
 \bottomrule
 \end{tabular}
@@ -266,7 +266,7 @@ $\theta \leftrightarrow$ KEV count & $+0.478$ & $< 10^{-6}$ & $[+0.310, +0.622]$
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.85\linewidth]{figures/fig2_difficulty_vs_exploitation.pdf}
-\caption{CWE commonness ($-b$) vs.\ exploitation rates. More common CWE types (higher $-b$) have higher exploitation rates in both KEV ($\rho = 0.224$, $p = 0.003$) and ExploitDB ($\rho = 0.362$, $p < 10^{-6}$). The relationship is statistically significant but modest at the quintile level, consistent with exploitation targeting prevalent weakness categories. Visual quintile bins are descriptive; reported $\rho$ values are Spearman rank-based.}
+\caption{CWE commonness ($-b$) vs.\ exploitation rates. More common CWE types (higher $-b$) have higher exploitation rates in both KEV ($\rho = 0.224$, $p = 0.003$) and ExploitDB ($\rho = 0.362$, $p = 1.3 \times 10^{-6}$). The relationship is statistically significant but modest at the quintile level, consistent with exploitation targeting prevalent weakness categories. Visual quintile bins are descriptive; reported $\rho$ values are Spearman rank-based.}
 \label{fig:exploitation}
 \end{figure}
 
@@ -327,7 +327,7 @@ microsoft & $+3.37$ & 0.0067 & 0.0085 & $0.78\times$ \\
 \end{tabular}
 \end{table}
 
-PCR achieves $2\times$ lift for mid-range vendors where the information function is most discriminating.
+Among the top-5-$\theta$ vendors evaluated, PCR achieves $2\times$ lift for google and ibm, where the information function is most discriminating.
 For extreme-$\theta$ vendors (Microsoft), PCR prioritizes the rarest CWEs, producing a trade-off between coverage breadth and exploitation likelihood.
 
 \section{Discussion}
@@ -355,9 +355,9 @@ This is a domain finding: what makes a CWE type rare or common is driven by soft
 \section{Conclusion}
 
 We demonstrate that psychometric methods---IRT, LLTM, and PCR---reveal interpretable latent structure in the cybersecurity vulnerability landscape that existing scoring systems miss.
-CWE difficulty is temporally stable ($\rho = 0.889$), validated by three independent exploitation-signal datasets, and explains ransomware targeting patterns ($p < 10^{-9}$).
-CVSS, designed for individual vulnerability severity, captures only 12--21\% of what makes entire weakness categories rare or common.
-PCR provides vendor-specific prioritization with positive lift for several mid-range vendors, while revealing underperformance for extreme-$\theta$ vendors where the information function saturates.
+CWE difficulty is temporally stable ($\rho = 0.889$), significantly associated with two of three exploitation-signal datasets (KEV and ExploitDB; EPSS not significant, $\rho = -0.097$, $p = 0.211$), and explains ransomware targeting patterns ($p < 10^{-9}$).
+CVSS, designed for individual vulnerability severity, alone captures 12\% (in-sample $R^2$; 21\% with CWE hierarchy features added) of the variance in what makes entire weakness categories rare or common.
+PCR provides vendor-specific prioritization with positive lift for four of the top-5-$\theta$ vendors, while revealing underperformance for the highest-$\theta$ vendor where the information function saturates.
 
 \paragraph{Data Availability.}
 All data sources are publicly available:

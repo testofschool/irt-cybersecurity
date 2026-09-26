@@ -138,6 +138,8 @@ def load_attack_techniques():
             continue
         if obj.get('x_mitre_deprecated'):
             continue
+        if obj.get('revoked'):  # revoked patterns are superseded; v19.0 active set = 697
+            continue
         ext = obj.get('external_references', [])
         att_id = None
         for ref in ext:
